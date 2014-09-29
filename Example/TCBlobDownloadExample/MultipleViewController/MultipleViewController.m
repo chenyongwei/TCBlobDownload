@@ -8,7 +8,7 @@
 
 #import "MultipleViewController.h"
 
-#define kDownloadPath [NSString pathWithComponents:@[NSTemporaryDirectory(), @"multipleExample"]]
+#define kDownloadPath [NSString pathWithComponents:@[NSTemporaryDirectory(), @"offline-content/unit_12342"]]
 
 static NSString * const kDownloadCellIdentifier = @"downloadCell";
 static NSString * const kURLKey = @"URL";
@@ -50,7 +50,7 @@ static NSString * const kNameKey = @"name";
 
 - (void)dismiss:(id)sender
 {
-    [[TCBlobDownloadManager sharedInstance] cancelAllDownloadsAndRemoveFiles:YES];
+    [[TCBlobDownloadManager sharedInstance] cancelAllDownloadsAndRemoveFiles:NO];
     
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -76,17 +76,21 @@ static NSString * const kNameKey = @"name";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _downloads = [NSMutableArray new];
-        [_downloads addObject:@{ kURLKey : @"https://github.com/thibaultCha/TCBlobDownload/archive/master.zip",
-                                 kNameKey: @"TCBlobDownload master branch" }];
+
+        [_downloads addObject:@{ kURLKey : @"http://qa.englishtown.com/Juno/school/imgs_epaper/0-b.8.3.3.4.jpg",
+                                 kNameKey: @"/service/mobile/lesson_1.json" }];
+        [_downloads addObject:@{ kURLKey : @"http://qa.englishtown.com/Juno/school/imgs_epaper/0A.1.3.2.4_alphabets.jpg" }];
+        [_downloads addObject:@{ kURLKey : @"http://qa.englishtown.com/Juno/school/imgs_epaper/0A.1.3.3.4_numbers.jpg" }];
+        [_downloads addObject:@{ kURLKey : @"http://qa.englishtown.com/Juno/school/imgs_epaper/0A.2.1.5.1_things.jpg"}];
         
-        [_downloads addObject:@{ kURLKey : @"https://github.com/thibaultCha/Equiprose/archive/master.zip",
-                                 kNameKey: @"Equiprose master branch" }];
+        [_downloads addObject:@{ kURLKey : @"http://qa.englishtown.com/Juno/school/videos/8.2%20Scene%203.mp4"}];
         
-        [_downloads addObject:@{ kURLKey : @"https://api.soundcloud.com/tracks/130355303/stream?client_id=b45b1aa10f1ac2941910a7f0d10f8e28",
-                                 kNameKey: @"Soundcloud 1" }];
+        [_downloads addObject:@{ kURLKey : @"http://qa.englishtown.com/Juno/school/videos/8.2%20Scene%201.mp4" }];
         
-        [_downloads addObject:@{ kURLKey : @"https://api.soundcloud.com/tracks/126240832/download?client_id=b45b1aa10f1ac2941910a7f0d10f8e28",
-                                 kNameKey: @"Soundcloud 2" }];
+        [_downloads addObject:@{ kURLKey : @"http://qa.englishtown.com/Juno/school/videos/8.1%20scene%201.mp4" }];
+        
+        [_downloads addObject:@{ kURLKey : @"http://qa.englishtown.com/Juno/school/videos/8.1%20Scene%203.mp4" }];
+        
     });
     
     return _downloads;
@@ -146,9 +150,14 @@ static NSString * const kNameKey = @"name";
                                                                           delegate:self];
                 [download setFileName:downloadInfos[kNameKey]];
                 [self.currentDownloads addObject:download];
-                
+
+//                [[TCBlobDownloadManager sharedInstance] setDefaultDownloadPath:@"temp"];
+                [[TCBlobDownloadManager sharedInstance] setMaxConcurrentDownloads:2];
                 [[TCBlobDownloadManager sharedInstance] startDownload:download];
+
             }
+            NSString *libDir = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSLog(libDir);
         }
         
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0]

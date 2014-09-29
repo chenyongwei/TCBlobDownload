@@ -99,6 +99,7 @@ typedef NS_ENUM(NSUInteger, TCBlobDownloadState) {
  */
 @property (nonatomic, copy, readonly, getter = pathToFile) NSString *pathToFile;
 
+
 /**
  The URL of the file to download.
  

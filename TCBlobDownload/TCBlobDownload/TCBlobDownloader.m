@@ -118,7 +118,12 @@ NSString * const TCHTTPStatusCode = @"httpStatus";
     
     // Test if file already exists (partly downloaded) to set HTTP `bytes` header or not
     NSFileManager *fm = [NSFileManager defaultManager];
-
+    NSString *fileName = [NSURL URLWithString:[self.pathToFile stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]]].lastPathComponent;
+    NSString *pathToDictory = [self.pathToFile stringByReplacingOccurrencesOfString:fileName withString:@""];
+    if (![fm fileExistsAtPath:pathToDictory]) {
+        [fm createDirectoryAtPath:pathToDictory withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
     if (![fm fileExistsAtPath:self.pathToFile]) {
         [fm createFileAtPath:self.pathToFile
                     contents:nil
@@ -372,7 +377,7 @@ NSString * const TCHTTPStatusCode = @"httpStatus";
 
 - (NSString *)fileName
 {
-    return _fileName ? _fileName : [[NSURL URLWithString:[self.downloadURL absoluteString]] lastPathComponent];
+    return _fileName ? _fileName : [self.downloadURL path];
 }
 
 - (NSString *)pathToFile
